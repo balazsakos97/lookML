@@ -1,0 +1,12 @@
+dimension: pii_data {
+    sql: ${TABLE}.pii_data ;;
+    html:
+    {% if view.field._value contains _user_attributes['email']  %}
+      <p>{{ rendered_value }}</p>
+    {% else %}
+      <p>[REDACTED]</p>
+    {% endif %}  ;;
+    type: string
+    description: "description"
+    group_label: "PII Data"
+}

@@ -1,0 +1,53 @@
+parameter: metric_filter {
+    label: "Metric Filter"
+    type: string
+    allowed_value: { value: "value 1" }
+    allowed_value: { value: "value 2"}
+    allowed_value: { value: "value 3"}
+    .
+    .
+    .
+    default_value: "value 1"
+    group_label: "Dynamic Fields"
+    description: "Description"
+}
+
+measure: metric {
+    type: number
+    label_from_parameter: metric_filter
+    sql:
+    {% if metric_filter._parameter_value == "'value 1'" %}
+      ${view.metric_one}
+    {% elsif metric_filter._parameter_value == "'value 2'" %}
+      ${view.metric_two}
+    {% elsif metric_filter._parameter_value == "'value 3'" %}
+      ${view.metric_three}
+    {% else %}
+      NULL
+    {% endif %};;
+    html:
+    {% if metric_filter._parameter_value =="'value 1'" or metric_filter._parameter_value =="'value 2'" %}
+      {% if value > 0.8 and value <= 0.85 %}
+        <p style="color: black; background-color: #fff2cc; font-size:100%">{{ rendered_value }}</p>
+      {% elsif value > 0.7 and value <= 0.8 %}
+        <p style="color: black; background-color: #f5e3e3; font-size:100%">{{ rendered_value }}</p>
+      {% elsif value <= 0.7 %}
+        <p style="color: black; background-color: #f4cccc; font-size:100%">{{ rendered_value }}</p>
+      {% else %}
+        <p>{{ rendered_value }}</p>
+      {% endif %}
+    {% elsif metric_filter._parameter_value =="'ABC'" or metric_filter._parameter_value =="'CBA'" %}
+      {% if value > 0.1 and value <= 0.15 %}
+        <p style="color: black; background-color: #fff2cc; font-size:100%">{{ rendered_value }}</p>
+      {% elsif value > 0.15 and value <= 0.2 %}
+        <p style="color: black; background-color: #f5e3e3; font-size:100%">{{ rendered_value }}</p>
+      {% elsif value > 0.2 %}
+        <p style="color: black; background-color: #f4cccc; font-size:100%">{{ rendered_value }}</p>
+      {% else %}
+        <p>{{ rendered_value }}</p>
+      {% endif %}
+    {% endif %};;
+    value_format_name: percent_2
+    group_label: "Dynamic Fields"
+    description: "description"
+}
